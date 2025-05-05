@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Apex League",
+    "slug": "apex-league",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "packagerOpts": {
+      "host": "172.20.10.2"
+    },
+    "splash": {
+      "image": "./assets/logo2.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.yourname.apexleague",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.yourname.apexleague",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c936ca93-73a8-4062-b1a2-6ee2548af7f9"
+      }
+    }
+  }
+}

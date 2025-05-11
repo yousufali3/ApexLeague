@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
 import ClashSqlad from '../assets/ClashSquad.jpg';
 import FullMap from '../assets/FullMap.jpg';
 import LoneWolf from '../assets/LoneWolf.jpg';
@@ -52,12 +51,32 @@ const AllMode = () => {
   ];
 
   const navigation = useNavigation();
-  const [selectedMode, setSelectedMode] = useState(null); // State to track the selected mode
+  const [selectedMode, setSelectedMode] = useState(null);
+  const [activeTab, setActiveTab] = useState('games'); // Track active bottom tab
 
   const handleCardPress = (mode) => {
-    setSelectedMode(mode); // Track the selected mode
-    console.log(`Selected Mode: ${mode.name}`); // Log the selected mode for debugging
+    setSelectedMode(mode);
+    console.log(`Selected Mode: ${mode.name}`);
     navigation.navigate('GameScreen', { mode });
+  };
+
+  // Handle bottom navigation presses
+  const handleNavPress = (tab) => {
+    setActiveTab(tab);
+    switch (tab) {
+      case 'refer':
+        navigation.navigate('ReferScreen'); // Navigate to Refer & Earn screen
+        break;
+      case 'upcoming':
+        navigation.navigate('UpcomingTournaments'); // Navigate to Upcoming screen
+        break;
+      case 'completed':
+        navigation.navigate('CompletedTournaments'); // Navigate to Completed screen
+        break;
+      default:
+        // Stay on current screen
+        break;
+    }
   };
 
   return (
@@ -70,10 +89,80 @@ const AllMode = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>eSport Games</Text>
         <TouchableOpacity style={styles.iconButton}>
-          {/* <Feather name="info" size={22} color="#ffffff" /> */}
           <MaterialIcons name="sports-esports" size={24} color="white" />
         </TouchableOpacity>
       </View>
+
+      <View style={styles.topNav}>
+        {' '}
+        {/* ← Moved outside header */}
+        {/* Nav Items */}
+        <TouchableOpacity
+          style={[
+            styles.navItem,
+            activeTab === 'refer' && styles.activeNavItem,
+          ]}
+          onPress={() => handleNavPress('refer')}
+        >
+          <MaterialIcons
+            name="card-giftcard"
+            size={24}
+            color={activeTab === 'refer' ? '#ff9e00' : '#fff'}
+          />
+          <Text
+            style={[
+              styles.navLabel,
+              activeTab === 'refer' && styles.activeNavLabel,
+            ]}
+          >
+            Refer & Earn
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.navItem,
+            activeTab === 'upcoming' && styles.activeNavItem,
+          ]}
+          onPress={() => handleNavPress('upcoming')}
+        >
+          <MaterialIcons
+            name="event"
+            size={24}
+            color={activeTab === 'upcoming' ? '#ff9e00' : '#fff'}
+          />
+          <Text
+            style={[
+              styles.navLabel,
+              activeTab === 'upcoming' && styles.activeNavLabel,
+            ]}
+          >
+            Upcoming
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.navItem,
+            activeTab === 'completed' && styles.activeNavItem,
+          ]}
+          onPress={() => handleNavPress('completed')}
+        >
+          <MaterialIcons
+            name="check-circle"
+            size={24}
+            color={activeTab === 'completed' ? '#ff9e00' : '#fff'}
+          />
+          <Text
+            style={[
+              styles.navLabel,
+              activeTab === 'completed' && styles.activeNavLabel,
+            ]}
+          >
+            Completed
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Enhanced Bottom Navigation Bar */}
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.gameGrid}>
@@ -99,15 +188,6 @@ const AllMode = () => {
           ))}
         </View>
       </ScrollView>
-
-      {/* <TouchableOpacity style={styles.floatingButton}>
-        <LinearGradient
-          colors={['#ff7b00', '#ff9e00']}
-          style={styles.floatingGradient}
-        >
-          <Feather name="message-circle" size={24} color="#ffffff" />
-        </LinearGradient>
-      </TouchableOpacity> */}
     </View>
   );
 };
@@ -148,7 +228,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 8,
-    paddingBottom: 80,
+    paddingBottom: 80, // Ensure content doesn't hide behind bottom nav
   },
   gameGrid: {
     flexDirection: 'row',
@@ -194,25 +274,38 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  floatingButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    overflow: 'hidden',
+  topNav: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
   },
-  floatingGradient: {
-    width: '100%',
-    height: '100%',
+
+  navItem: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 8,
+  },
+  activeNavItem: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#ff9e00',
+  },
+  navLabel: {
+    color: '#fff',
+    fontSize: 11,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  activeNavLabel: {
+    color: '#ff9e00',
+    fontWeight: 'bold',
   },
 });
 

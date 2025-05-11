@@ -20,6 +20,11 @@ const ProfileScreen = () => {
     // Handle logout logic here (e.g., clear user token, state, etc.)
   };
 
+  const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
+  console.log(token);
+  console.log(user);
+
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -39,8 +44,8 @@ const ProfileScreen = () => {
                   />
                 </View>
               </View>
-              <Text style={styles.welcomeText}>John Doe</Text>
-              <Text style={styles.subtitleText}>@johndoe</Text>
+              <Text style={styles.welcomeText}>{user.name}</Text>
+              <Text style={styles.subtitleText}>@{user.name}</Text>
             </View>
 
             <Text style={styles.sectionTitle}>Contact Information</Text>
@@ -50,9 +55,7 @@ const ProfileScreen = () => {
               </View>
               <View style={styles.supportOptionContent}>
                 <Text style={styles.optionTitle}>Email</Text>
-                <Text style={styles.optionDescription}>
-                  john.doe@example.com
-                </Text>
+                <Text style={styles.optionDescription}>{user.email}</Text>
               </View>
             </View>
 
@@ -62,7 +65,7 @@ const ProfileScreen = () => {
               </View>
               <View style={styles.supportOptionContent}>
                 <Text style={styles.optionTitle}>Phone</Text>
-                <Text style={styles.optionDescription}>123-456-7890</Text>
+                <Text style={styles.optionDescription}>{user.phone}</Text>
               </View>
             </View>
 

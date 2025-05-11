@@ -6,9 +6,18 @@ const MatchCard = ({ match }) => {
     <View style={styles.card}>
       <Text style={styles.title}>{match.title}</Text>
       <View style={styles.detailsRow}>
-        <Text>Entry: ₹{match.entry}</Text>
-        <Text>Prizes: ₹{match.prizes}</Text>
-        <Text>Kill: ₹{match.kill}</Text>
+        <Text>
+          Entry: <FontAwesome5 name="coins" size={18} color="gold" />
+          {match.entry}
+        </Text>
+        <Text>
+          Prizes: <FontAwesome5 name="coins" size={18} color="gold" />
+          {match.prizes}
+        </Text>
+        <Text>
+          Kill: <FontAwesome5 name="coins" size={18} color="gold" />
+          {match.kill}
+        </Text>
       </View>
       <View style={styles.detailsRow}>
         <Text>Start: {match.startDate}</Text>

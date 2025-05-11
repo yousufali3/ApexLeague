@@ -13,6 +13,7 @@ import { useAuthStore } from '../store/authStore';
 import { BACKEND_URL } from '../services/config';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -34,9 +35,7 @@ const TournamentCard = ({ tournament }) => {
   return (
     <View style={styles.tournamentCard}>
       {/* Header with game type and ID */}
-      <TouchableOpacity
-        onPress={() => navigate.navigate('TournamentDetails', { tournament })}
-      >
+      <TouchableOpacity>
         <View style={styles.cardHeader}>
           <View style={styles.gameTypeContainer}>
             <Icon name="lightning-bolt" size={16} color="#FFD700" />
@@ -59,7 +58,11 @@ const TournamentCard = ({ tournament }) => {
                 <Icon name="trophy-outline" size={16} color="#FFD700" />
                 <Text style={styles.statLabel}>Entry</Text>
               </View>
-              <Text style={styles.statValue}>₹{tournament.entryFee}</Text>
+              <Text style={styles.statValue}>
+                <FontAwesome5 name="coins" size={18} color="gold" />
+                {'  '}
+                {tournament.entryFee}
+              </Text>
             </View>
 
             <View style={styles.statBox}>
@@ -67,7 +70,11 @@ const TournamentCard = ({ tournament }) => {
                 <Icon name="gift-outline" size={16} color="#FFD700" />
                 <Text style={styles.statLabel}>Prizes</Text>
               </View>
-              <Text style={styles.statValue}>₹{tournament.prizePool}</Text>
+              <Text style={styles.statValue}>
+                <FontAwesome5 name="coins" size={18} color="gold" />
+                {'  '}
+                {tournament.prizePool}
+              </Text>
             </View>
 
             <View style={styles.statBox}>
@@ -76,7 +83,9 @@ const TournamentCard = ({ tournament }) => {
                 <Text style={styles.statLabel}>Kill Point</Text>
               </View>
               <Text style={styles.statValue}>
-                ₹{tournament.prizeBreakup.perKillAmount}/Kill
+                <FontAwesome5 name="coins" size={18} color="gold" />
+                {'  '}
+                {tournament.prizeBreakup.perKillAmount}/Kill
               </Text>
             </View>
           </View>
@@ -122,10 +131,20 @@ const TournamentCard = ({ tournament }) => {
 
         {/* Action button */}
         <TouchableOpacity
-          style={styles.viewButton}
+          style={[
+            styles.viewButton,
+            tournament.participantsCount === tournament.maxParticipants && {
+              backgroundColor: '#ccc',
+            },
+          ]}
           onPress={() => navigate.navigate('TournamentDetails', { tournament })}
+          disabled={tournament.participantsCount === tournament.maxParticipants}
         >
-          <Text style={styles.viewButtonText}>Join Now</Text>
+          <Text style={styles.viewButtonText}>
+            {tournament.participantsCount === tournament.maxParticipants
+              ? 'FULL'
+              : 'JOIN NOW'}
+          </Text>
         </TouchableOpacity>
       </TouchableOpacity>
     </View>

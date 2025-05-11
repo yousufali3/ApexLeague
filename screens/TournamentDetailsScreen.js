@@ -102,6 +102,8 @@ const TournamentDetailsScreen = ({ route, navigation }) => {
     const isTeamMode = tournament.mode === 'duo' || tournament.mode === 'squad';
     const tournamentId = tournament._id; // Make sure this exists
     const token = useAuthStore.getState().token;
+    const balance = useAuthStore.getState().balance;
+    const setBalance = useAuthStore.getState().setBalance;
 
     let url = '';
     let payload = {};
@@ -131,6 +133,8 @@ const TournamentDetailsScreen = ({ route, navigation }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      setBalance(balance - tournament.entryFee);
 
       console.log('Registration Success:', data);
       Alert.alert('Registration Successful', 'You have joined the tournament!');
@@ -285,11 +289,17 @@ const TournamentDetailsScreen = ({ route, navigation }) => {
             <View style={styles.prizeSection}>
               <View style={styles.prizeCard}>
                 <Text style={styles.prizeLabel}>Entry Fee</Text>
-                <Text style={styles.prizeAmount}>₹{tournament.entryFee}</Text>
+                <Text style={styles.prizeAmount}>
+                  <FontAwesome5 name="coins" size={18} color="gold" />
+                  {tournament.entryFee}
+                </Text>
               </View>
               <View style={styles.prizeCard}>
                 <Text style={styles.prizeLabel}>Prize Pool</Text>
-                <Text style={styles.prizeAmount}>₹{tournament.prizePool}</Text>
+                <Text style={styles.prizeAmount}>
+                  <FontAwesome5 name="coins" size={18} color="gold" />
+                  {tournament.prizePool}
+                </Text>
               </View>
             </View>
 

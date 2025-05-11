@@ -107,11 +107,19 @@ const CompletedLeagues = ({ navigation }) => {
         <View style={styles.prizeContainer}>
           <View style={styles.prizeItem}>
             <Text style={styles.prizeLabel}>Prize Pool</Text>
-            <Text style={styles.prizeValue}>₹{item.prizePool}</Text>
+            <Text style={styles.prizeValue}>
+              <FontAwesome5 name="coins" size={18} color="gold" />
+              {'  '}
+              {item.prizePool}
+            </Text>
           </View>
           <View style={styles.prizeItem}>
             <Text style={styles.prizeLabel}>Entry Fee</Text>
-            <Text style={styles.prizeValue}>₹{item.entryFee}</Text>
+            <Text style={styles.prizeValue}>
+              <FontAwesome5 name="coins" size={18} color="gold" />
+              {'  '}
+              {item.entryFee}
+            </Text>
           </View>
         </View>
 

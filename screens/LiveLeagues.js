@@ -13,10 +13,13 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTournamentStore } from '../store/tournamentStore';
+import { useNavigation } from '@react-navigation/native';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 const { width } = Dimensions.get('window');
 
-const LiveLeagues = ({ navigation }) => {
+const LiveLeagues = () => {
+  const navigation = useNavigation();
   const { live, loadTournaments } = useTournamentStore();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -46,7 +49,9 @@ const LiveLeagues = ({ navigation }) => {
     <TouchableOpacity
       style={styles.tournamentCard}
       onPress={() =>
-        navigation.navigate('TournamentDetails', { tournament: item })
+        navigation.navigate('MyUpcomingLeaguesDetails', {
+          tournament: item,
+        })
       }
     >
       <LinearGradient
@@ -103,11 +108,19 @@ const LiveLeagues = ({ navigation }) => {
         <View style={styles.prizeContainer}>
           <View style={styles.prizeItem}>
             <Text style={styles.prizeLabel}>Prize Pool</Text>
-            <Text style={styles.prizeValue}>₹{item.prizePool}</Text>
+            <Text style={styles.prizeValue}>
+              <FontAwesome5 name="coins" size={18} color="gold" />
+              {'  '}
+              {item.prizePool}
+            </Text>
           </View>
           <View style={styles.prizeItem}>
             <Text style={styles.prizeLabel}>Entry Fee</Text>
-            <Text style={styles.prizeValue}>₹{item.entryFee}</Text>
+            <Text style={styles.prizeValue}>
+              <FontAwesome5 name="coins" size={18} color="gold" />
+              {'  '}
+              {item.entryFee}
+            </Text>
           </View>
         </View>
 
@@ -115,10 +128,12 @@ const LiveLeagues = ({ navigation }) => {
         <TouchableOpacity
           style={styles.viewDetailsButton}
           onPress={() =>
-            navigation.navigate('TournamentDetails', { tournament: item })
+            navigation.navigate('MyUpcomingLeaguesDetails', {
+              tournament: item,
+            })
           }
         >
-          <Text style={styles.viewDetailsText}>WATCH NOW</Text>
+          <Text style={styles.viewDetailsText}> View Details</Text>
         </TouchableOpacity>
       </LinearGradient>
     </TouchableOpacity>

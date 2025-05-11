@@ -4,6 +4,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const useAuthStore = create((set) => ({
   token: null,
   user: null,
+  balance: 0,
+  setBalance: async (balance) => {
+    set({ balance });
+    await AsyncStorage.setItem('balance', JSON.stringify(balance));
+  },
+  getBalance: async () => {
+    const balance = await AsyncStorage.getItem('balance');
+    if (balance) {
+      set({ balance: JSON.parse(balance) });
+    }
+  },
 
   setToken: async (token) => {
     set({ token });
@@ -24,6 +35,12 @@ export const useAuthStore = create((set) => ({
     const token = await AsyncStorage.getItem('token');
     if (token) {
       set({ token });
+    }
+  },
+  loadUser: async () => {
+    const user = await AsyncStorage.getItem('user');
+    if (user) {
+      set({ user: JSON.parse(user) });
     }
   },
 }));

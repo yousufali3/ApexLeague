@@ -15,10 +15,14 @@ import SoloScreen from './SoloScreen';
 import DuoScreen from './DuoScreen';
 import SquadScreen from './SquadScreen';
 import AllMode from './AllMode';
+import { useAuthStore } from '../store/authStore';
 
 const HomeScreen = () => {
   const [selectedTab, setSelectedTab] = useState('Solo');
   const navigation = useNavigation();
+
+  const user = useAuthStore((state) => state.user);
+  const balance = useAuthStore((state) => state.balance);
 
   const handleTabChange = (tab) => {
     setSelectedTab(tab);
@@ -35,7 +39,7 @@ const HomeScreen = () => {
   const renderTopBar = () => (
     <View style={styles.topBar}>
       {/* App Title/Logo */}
-      <Text style={styles.appTitle}>GameZone</Text>
+      <Text style={styles.appTitle}>Apex League</Text>
 
       <View style={styles.topBarRight}>
         {/* Wallet Balance */}
@@ -49,7 +53,7 @@ const HomeScreen = () => {
             end={{ x: 1, y: 0 }}
             style={styles.walletGradient}
           >
-            <Text style={styles.walletText}>546</Text>
+            <Text style={styles.walletText}>{balance}</Text>
 
             <FontAwesome5
               name="coins"

@@ -55,7 +55,7 @@ const HomeScreen = () => {
             end={{ x: 1, y: 0 }}
             style={styles.walletGradient}
           >
-            <Text style={styles.walletText}>{balance || user.wallet}</Text>
+            <Text style={styles.walletText}>{balance || user?.wallet}</Text>
 
             <FontAwesome5
               name="coins"

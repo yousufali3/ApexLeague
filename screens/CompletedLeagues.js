@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,17 +10,19 @@ import {
   RefreshControl,
   Image,
   Dimensions,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useTournamentStore } from '../store/tournamentStore';
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useTournamentStore } from "../store/tournamentStore";
 
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { useNavigation } from "@react-navigation/native";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
-const CompletedLeagues = ({ navigation }) => {
+const CompletedLeagues = () => {
   const { completed, loadTournaments } = useTournamentStore();
   const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     loadTournaments();
@@ -34,13 +36,13 @@ const CompletedLeagues = ({ navigation }) => {
 
   // Format date string
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   // Format time string
   const formatTime = (dateString) => {
-    const options = { hour: '2-digit', minute: '2-digit' };
+    const options = { hour: "2-digit", minute: "2-digit" };
     return new Date(dateString).toLocaleTimeString(undefined, options);
   };
 
@@ -54,11 +56,11 @@ const CompletedLeagues = ({ navigation }) => {
     <TouchableOpacity
       style={styles.tournamentCard}
       onPress={() =>
-        navigation.navigate('TournamentDetails', { tournament: item })
+        navigation.navigate("CompletedDetails", { tournament: item })
       }
     >
       <LinearGradient
-        colors={['#3d3d3d', '#2a2a2a']}
+        colors={["#3d3d3d", "#2a2a2a"]}
         style={styles.cardGradient}
       >
         {/* Game Type and Status */}
@@ -109,7 +111,7 @@ const CompletedLeagues = ({ navigation }) => {
             <Text style={styles.prizeLabel}>Prize Pool</Text>
             <Text style={styles.prizeValue}>
               <FontAwesome5 name="coins" size={18} color="gold" />
-              {'  '}
+              {"  "}
               {item.prizePool}
             </Text>
           </View>
@@ -117,7 +119,7 @@ const CompletedLeagues = ({ navigation }) => {
             <Text style={styles.prizeLabel}>Entry Fee</Text>
             <Text style={styles.prizeValue}>
               <FontAwesome5 name="coins" size={18} color="gold" />
-              {'  '}
+              {"  "}
               {item.entryFee}
             </Text>
           </View>
@@ -127,7 +129,7 @@ const CompletedLeagues = ({ navigation }) => {
         <TouchableOpacity
           style={styles.viewDetailsButton}
           onPress={() =>
-            navigation.navigate('TournamentDetails', { tournament: item })
+            navigation.navigate("CompletedDetails", { tournament: item })
           }
         >
           <Text style={styles.viewDetailsText}>VIEW RESULTS</Text>
@@ -139,7 +141,7 @@ const CompletedLeagues = ({ navigation }) => {
   const EmptyListComponent = () => (
     <View style={styles.emptyContainer}>
       <Image
-        source={{ uri: 'https://via.placeholder.com/150' }}
+        source={{ uri: "https://via.placeholder.com/150" }}
         style={styles.emptyImage}
       />
       <Text style={styles.emptyText}>No completed tournaments found</Text>
@@ -152,7 +154,7 @@ const CompletedLeagues = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={['#1a2a3a', '#2a3a4a']} style={styles.container}>
+      <LinearGradient colors={["#1a2a3a", "#2a3a4a"]} style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Completed Tournaments</Text>
@@ -169,7 +171,7 @@ const CompletedLeagues = ({ navigation }) => {
               refreshing={refreshing}
               onRefresh={onRefresh}
               tintColor="#fff"
-              colors={['#4a6eb5']}
+              colors={["#4a6eb5"]}
             />
           }
           ListEmptyComponent={EmptyListComponent}
@@ -182,28 +184,28 @@ const CompletedLeagues = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#1a2a3a',
+    backgroundColor: "#1a2a3a",
   },
   container: {
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: 'rgba(26, 42, 58, 0.95)',
+    backgroundColor: "rgba(26, 42, 58, 0.95)",
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   headerTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   listContainer: {
     padding: 16,
@@ -211,10 +213,10 @@ const styles = StyleSheet.create({
   },
   tournamentCard: {
     borderRadius: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginBottom: 20,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -223,94 +225,94 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   gameType: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   statusBadge: {
-    backgroundColor: 'rgba(128, 128, 128, 0.5)',
+    backgroundColor: "rgba(128, 128, 128, 0.5)",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
   statusText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
     fontSize: 12,
   },
   tournamentTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   infoContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 12,
     padding: 12,
     marginBottom: 16,
   },
   infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 8,
   },
   infoItem: {
-    width: '48%',
+    width: "48%",
   },
   infoLabel: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: "rgba(255, 255, 255, 0.6)",
     fontSize: 12,
     marginBottom: 2,
   },
   infoValue: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   prizeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
   },
   prizeItem: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 10,
     padding: 12,
-    alignItems: 'center',
-    width: '48%',
+    alignItems: "center",
+    width: "48%",
   },
   prizeLabel: {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: "rgba(255, 255, 255, 0.7)",
     fontSize: 12,
     marginBottom: 4,
   },
   prizeValue: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   viewDetailsButton: {
-    backgroundColor: 'rgba(128, 128, 128, 0.8)',
+    backgroundColor: "rgba(128, 128, 128, 0.8)",
     paddingVertical: 12,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   viewDetailsText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
     fontSize: 14,
     letterSpacing: 1,
   },
   emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 40,
   },
   emptyImage: {
@@ -318,18 +320,18 @@ const styles = StyleSheet.create({
     height: 120,
     marginBottom: 20,
     opacity: 0.7,
-    tintColor: '#808080',
+    tintColor: "#808080",
   },
   emptyText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
   },
   emptySubText: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: "rgba(255, 255, 255, 0.6)",
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 

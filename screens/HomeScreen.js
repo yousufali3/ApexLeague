@@ -22,8 +22,6 @@ const HomeScreen = () => {
   const navigation = useNavigation();
 
   const user = useAuthStore((state) => state.user);
-  console.log(user);
-
   const balance = useAuthStore((state) => state.balance);
 
   const handleTabChange = (tab) => {
@@ -55,7 +53,7 @@ const HomeScreen = () => {
             end={{ x: 1, y: 0 }}
             style={styles.walletGradient}
           >
-            <Text style={styles.walletText}>{balance || user?.wallet}</Text>
+            <Text style={styles.walletText}>{balance}</Text>
 
             <FontAwesome5
               name="coins"

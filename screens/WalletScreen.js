@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,29 +11,29 @@ import {
   Modal,
   Image,
   Alert,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Feather } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { useAuthStore } from '../store/authStore';
-import qr from '../assets/wallet.png'; // Placeholder for QR code image
-import axios from 'axios';
-import moment from 'moment';
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Feather } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { useAuthStore } from "../store/authStore";
+import qr from "../assets/wallet.png"; // Placeholder for QR code image
+import axios from "axios";
+import moment from "moment";
 
-import { BACKEND_URL } from '../services/config';
+import { BACKEND_URL } from "../services/config";
 const WalletScreen = () => {
-  const [depositAmount, setDepositAmount] = useState('');
-  const [withdrawAmount, setWithdrawAmount] = useState('');
-  const [activeTab, setActiveTab] = useState('deposit');
+  const [depositAmount, setDepositAmount] = useState("");
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [activeTab, setActiveTab] = useState("deposit");
   const [showQRModal, setShowQRModal] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('upi');
-  const [upiId, setUpiId] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [ifscCode, setIfscCode] = useState('');
-  const [accountHolderName, setAccountHolderName] = useState('');
-  const [withdrawalMethod, setWithdrawalMethod] = useState('upi');
-  const [transactionId, setTransactionId] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState("upi");
+  const [upiId, setUpiId] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [accountHolderName, setAccountHolderName] = useState("");
+  const [withdrawalMethod, setWithdrawalMethod] = useState("upi");
+  const [transactionId, setTransactionId] = useState("");
   const [loading, setLoading] = useState(false);
 
   const user = useAuthStore((state) => state.user);
@@ -45,7 +45,7 @@ const WalletScreen = () => {
   // Replace with actual balance
 
   // Sample UPI IDs for the platform
-  const platformUpiId = 'barmanpiklu13@ybl';
+  const platformUpiId = "apexleague@axl";
 
   useEffect(() => {
     // Fetch transaction history when the component mounts
@@ -69,23 +69,23 @@ const WalletScreen = () => {
 
       const { deposits, withdrawals, balance } = res.data.data;
       await useAuthStore.getState().setBalance(balance);
-      console.log(balance, 'balance');
+      console.log(balance, "balance");
 
       // Transform both deposits and withdrawals into one array
       const transactions = [
         ...deposits.map((item) => ({
           id: item._id,
-          type: 'deposit',
+          type: "deposit",
           amount: item.amount,
-          date: moment(item.requestedAt).format('DD MMM, YYYY'),
+          date: moment(item.requestedAt).format("DD MMM, YYYY"),
           status: item.status,
           timestamp: new Date(item.requestedAt).getTime(), // used for sorting
         })),
         ...withdrawals.map((item) => ({
           id: item._id,
-          type: 'withdraw',
+          type: "withdraw",
           amount: item.amount,
-          date: moment(item.requestedAt).format('DD MMM, YYYY'),
+          date: moment(item.requestedAt).format("DD MMM, YYYY"),
           status: item.status,
           timestamp: new Date(item.requestedAt).getTime(), // used for sorting
         })),
@@ -103,22 +103,22 @@ const WalletScreen = () => {
       // console.log('Transaction history:', transactionHistory);
     } catch (err) {
       console.error(
-        'Failed to fetch transaction history',
+        "Failed to fetch transaction history",
         err.response?.data || err.message
       );
     }
   };
 
   const handleDeposit = async () => {
-    console.log('Deposit amount:', depositAmount);
+    console.log("Deposit amount:", depositAmount);
 
     if (Number(depositAmount) < 30) {
-      Alert.alert('Error', 'Minimum deposit amount is 30');
+      Alert.alert("Error", "Minimum deposit amount is 30");
       return;
     }
 
     if (!transactionId) {
-      Alert.alert('Error', 'Please enter the transaction ID');
+      Alert.alert("Error", "Please enter the transaction ID");
       return;
     }
 
@@ -135,55 +135,55 @@ const WalletScreen = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
       setLoading(false);
 
       Alert.alert(
-        'Deposit Initiated',
-        'Your deposit request has been submitted. Admin will verify and approve your transaction.',
-        [{ text: 'OK' }]
+        "Deposit Initiated",
+        "Your deposit request has been submitted. Admin will verify and approve your transaction.",
+        [{ text: "OK" }]
       );
 
-      console.log('Deposit submitted:', response.data);
+      console.log("Deposit submitted:", response.data);
 
       // Clear inputs
-      setDepositAmount('');
-      setTransactionId('');
+      setDepositAmount("");
+      setTransactionId("");
       fetchTransactionHistory();
     } catch (error) {
-      console.error('Deposit error:', error.response?.data || error.message);
+      console.error("Deposit error:", error.response?.data || error.message);
       Alert.alert(
-        'Error',
-        error.response?.data?.error || 'Something went wrong'
+        "Error",
+        error.response?.data?.error || "Something went wrong"
       );
     }
   };
 
   const handleWithdraw = async () => {
     if (Number(withdrawAmount) < 50) {
-      Alert.alert('Error', 'Minimum withdrawal amount is 50');
+      Alert.alert("Error", "Minimum withdrawal amount is 50");
       return;
     }
 
     if (Number(withdrawAmount) > walletBalance) {
-      Alert.alert('Error', 'Insufficient balance');
+      Alert.alert("Error", "Insufficient balance");
       return;
     }
 
     // Validate withdrawal details
-    if (withdrawalMethod === 'upi' && !upiId) {
-      Alert.alert('Error', 'Please enter your UPI ID');
+    if (withdrawalMethod === "upi" && !upiId) {
+      Alert.alert("Error", "Please enter your UPI ID");
       return;
     }
 
     if (
-      withdrawalMethod === 'bank' &&
+      withdrawalMethod === "bank" &&
       (!bankName || !accountNumber || !ifscCode || !accountHolderName)
     ) {
-      Alert.alert('Error', 'Please fill in all bank details');
+      Alert.alert("Error", "Please fill in all bank details");
       return;
     }
 
@@ -192,10 +192,10 @@ const WalletScreen = () => {
       // const token = await AsyncStorage.getItem('token');
 
       const requestBody =
-        withdrawalMethod === 'bank'
+        withdrawalMethod === "bank"
           ? {
               amount: Number(withdrawAmount),
-              paymentMethod: 'bank',
+              paymentMethod: "bank",
               bankDetails: {
                 bankName,
                 accountNumber,
@@ -205,7 +205,7 @@ const WalletScreen = () => {
             }
           : {
               amount: Number(withdrawAmount),
-              paymentMethod: 'upi',
+              paymentMethod: "upi",
               upiDetails: {
                 upiId,
               },
@@ -217,33 +217,33 @@ const WalletScreen = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
       setLoading(false);
 
       Alert.alert(
-        'Withdrawal Requested',
-        'Your withdrawal request has been submitted. Admin will process your request within 24 hours.',
-        [{ text: 'OK' }]
+        "Withdrawal Requested",
+        "Your withdrawal request has been submitted. Admin will process your request within 24 hours.",
+        [{ text: "OK" }]
       );
 
-      console.log('Withdrawal submitted:', response.data);
+      console.log("Withdrawal submitted:", response.data);
 
       // Clear inputs
-      setWithdrawAmount('');
-      setUpiId('');
-      setBankName('');
-      setAccountNumber('');
-      setIfscCode('');
-      setAccountHolderName('');
+      setWithdrawAmount("");
+      setUpiId("");
+      setBankName("");
+      setAccountNumber("");
+      setIfscCode("");
+      setAccountHolderName("");
       fetchTransactionHistory();
     } catch (error) {
-      console.error('Withdrawal error:', error.response?.data || error.message);
+      console.error("Withdrawal error:", error.response?.data || error.message);
       Alert.alert(
-        'Error',
-        error.response?.data?.error || 'Something went wrong'
+        "Error",
+        error.response?.data?.error || "Something went wrong"
       );
     }
   };
@@ -253,31 +253,31 @@ const WalletScreen = () => {
     const transactions = [
       {
         id: 1,
-        type: 'deposit',
+        type: "deposit",
         amount: 500,
-        date: '27 Apr, 2025',
-        status: 'completed',
+        date: "27 Apr, 2025",
+        status: "completed",
       },
       {
         id: 2,
-        type: 'withdraw',
+        type: "withdraw",
         amount: 200,
-        date: '25 Apr, 2025',
-        status: 'pending',
+        date: "25 Apr, 2025",
+        status: "pending",
       },
       {
         id: 3,
-        type: 'deposit',
+        type: "deposit",
         amount: 1000,
-        date: '20 Apr, 2025',
-        status: 'completed',
+        date: "20 Apr, 2025",
+        status: "completed",
       },
       {
         id: 4,
-        type: 'withdraw',
+        type: "withdraw",
         amount: 300,
-        date: '15 Apr, 2025',
-        status: 'rejected',
+        date: "15 Apr, 2025",
+        status: "rejected",
       },
     ];
 
@@ -291,14 +291,14 @@ const WalletScreen = () => {
               <View
                 style={[
                   styles.transactionIcon,
-                  transaction.type === 'deposit'
+                  transaction.type === "deposit"
                     ? styles.depositIcon
                     : styles.withdrawIcon,
                 ]}
               >
                 <Feather
                   name={
-                    transaction.type === 'deposit' ? 'arrow-down' : 'arrow-up'
+                    transaction.type === "deposit" ? "arrow-down" : "arrow-up"
                   }
                   size={16}
                   color="#fff"
@@ -308,15 +308,15 @@ const WalletScreen = () => {
 
             <View style={styles.transactionDetails}>
               <Text style={styles.transactionType}>
-                {transaction.type === 'deposit' ? 'Deposit' : 'Withdrawal'}
+                {transaction.type === "deposit" ? "Deposit" : "Withdrawal"}
               </Text>
               <Text style={styles.transactionDate}>{transaction.date}</Text>
               <Text
                 style={[
                   styles.statusText,
-                  transaction.status === 'approved'
+                  transaction.status === "approved"
                     ? styles.statusCompleted
-                    : transaction.status === 'pending'
+                    : transaction.status === "pending"
                     ? styles.statusPending
                     : styles.statusRejected,
                 ]}
@@ -328,14 +328,14 @@ const WalletScreen = () => {
             <Text
               style={[
                 styles.transactionAmount,
-                transaction.type === 'deposit'
+                transaction.type === "deposit"
                   ? styles.depositText
                   : styles.withdrawText,
               ]}
             >
-              {transaction.type === 'deposit' ? '+' : '-'}{' '}
+              {transaction.type === "deposit" ? "+" : "-"}{" "}
               <FontAwesome5 name="coins" size={18} color="gold" />
-              {'  '}
+              {"  "}
               {transaction.amount}
             </Text>
           </View>
@@ -350,7 +350,7 @@ const WalletScreen = () => {
         <Text style={styles.inputLabel}>Enter Deposit Amount</Text>
         <View style={styles.inputWrapper}>
           <Text style={styles.currencySymbol}>
-            {' '}
+            {" "}
             <FontAwesome5 name="coins" size={18} color="gold" />
           </Text>
           <TextInput
@@ -373,9 +373,9 @@ const WalletScreen = () => {
               disabled={loading}
             >
               <Text style={styles.quickAmountText}>
-                {' '}
+                {" "}
                 <FontAwesome5 name="coins" size={18} color="gold" />
-                {'  '}
+                {"  "}
                 {amount}
               </Text>
             </TouchableOpacity>
@@ -388,15 +388,15 @@ const WalletScreen = () => {
             <TouchableOpacity
               style={[
                 styles.paymentOption,
-                paymentMethod === 'upi' && styles.activePaymentOption,
+                paymentMethod === "upi" && styles.activePaymentOption,
               ]}
-              onPress={() => setPaymentMethod('upi')}
+              onPress={() => setPaymentMethod("upi")}
               disabled={loading}
             >
               <Text
                 style={[
                   styles.paymentOptionText,
-                  paymentMethod === 'upi' && styles.activePaymentOptionText,
+                  paymentMethod === "upi" && styles.activePaymentOptionText,
                 ]}
               >
                 UPI ID
@@ -405,15 +405,15 @@ const WalletScreen = () => {
             <TouchableOpacity
               style={[
                 styles.paymentOption,
-                paymentMethod === 'qr' && styles.activePaymentOption,
+                paymentMethod === "qr" && styles.activePaymentOption,
               ]}
-              onPress={() => setPaymentMethod('qr')}
+              onPress={() => setPaymentMethod("qr")}
               disabled={loading}
             >
               <Text
                 style={[
                   styles.paymentOptionText,
-                  paymentMethod === 'qr' && styles.activePaymentOptionText,
+                  paymentMethod === "qr" && styles.activePaymentOptionText,
                 ]}
               >
                 QR Code
@@ -422,7 +422,7 @@ const WalletScreen = () => {
           </View>
         </View>
 
-        {paymentMethod === 'upi' ? (
+        {paymentMethod === "upi" ? (
           <View style={styles.upiContainer}>
             <Text style={styles.upiLabel}>Pay to this UPI ID:</Text>
             <View style={styles.upiIdContainer}>
@@ -468,7 +468,7 @@ const WalletScreen = () => {
           }
         >
           <LinearGradient
-            colors={['#4CAF50', '#388E3C']}
+            colors={["#4CAF50", "#388E3C"]}
             style={[
               styles.gradient,
               (loading ||
@@ -484,13 +484,13 @@ const WalletScreen = () => {
 
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
+            flexDirection: "row",
+            alignItems: "center",
             marginTop: 8,
-            justifyContent: 'center',
+            justifyContent: "center",
           }}
         >
-          <Text style={styles.noteText}>* Minimum Deposit amount is{'  '}</Text>
+          <Text style={styles.noteText}>* Minimum Deposit amount is{"  "}</Text>
           <FontAwesome5 name="coins" size={14} color="#FFD700" />
           <Text style={styles.noteText}> 30</Text>
         </View>
@@ -508,9 +508,9 @@ const WalletScreen = () => {
         <Text style={styles.inputLabel}>Enter Withdrawal Amount</Text>
         <View style={styles.inputWrapper}>
           <Text style={styles.currencySymbol}>
-            {' '}
+            {" "}
             <FontAwesome5 name="coins" size={18} color="gold" />
-            {''}
+            {""}
           </Text>
           <TextInput
             style={styles.input}
@@ -535,11 +535,11 @@ const WalletScreen = () => {
                 {amount === walletBalance ? (
                   <Text>ALL</Text>
                 ) : (
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <FontAwesome5 name="coins" size={18} color="gold" />
 
-                    <Text style={{ marginLeft: 4, color: 'white' }}>
-                      {' '}
+                    <Text style={{ marginLeft: 4, color: "white" }}>
+                      {" "}
                       {amount}
                     </Text>
                   </View>
@@ -555,15 +555,15 @@ const WalletScreen = () => {
             <TouchableOpacity
               style={[
                 styles.paymentOption,
-                withdrawalMethod === 'upi' && styles.activePaymentOption,
+                withdrawalMethod === "upi" && styles.activePaymentOption,
               ]}
-              onPress={() => setWithdrawalMethod('upi')}
+              onPress={() => setWithdrawalMethod("upi")}
               disabled={loading}
             >
               <Text
                 style={[
                   styles.paymentOptionText,
-                  withdrawalMethod === 'upi' && styles.activePaymentOptionText,
+                  withdrawalMethod === "upi" && styles.activePaymentOptionText,
                 ]}
               >
                 UPI ID
@@ -572,15 +572,15 @@ const WalletScreen = () => {
             <TouchableOpacity
               style={[
                 styles.paymentOption,
-                withdrawalMethod === 'bank' && styles.activePaymentOption,
+                withdrawalMethod === "bank" && styles.activePaymentOption,
               ]}
-              onPress={() => setWithdrawalMethod('bank')}
+              onPress={() => setWithdrawalMethod("bank")}
               disabled={loading}
             >
               <Text
                 style={[
                   styles.paymentOptionText,
-                  withdrawalMethod === 'bank' && styles.activePaymentOptionText,
+                  withdrawalMethod === "bank" && styles.activePaymentOptionText,
                 ]}
               >
                 Bank Account
@@ -589,7 +589,7 @@ const WalletScreen = () => {
           </View>
         </View>
 
-        {withdrawalMethod === 'upi' ? (
+        {withdrawalMethod === "upi" ? (
           <View>
             <Text style={styles.inputLabel}>Enter Your UPI ID</Text>
             <View style={styles.inputWrapper}>
@@ -667,21 +667,21 @@ const WalletScreen = () => {
             !withdrawAmount ||
             Number(withdrawAmount) < 50 ||
             Number(withdrawAmount) > walletBalance ||
-            (withdrawalMethod === 'upi' && !upiId) ||
-            (withdrawalMethod === 'bank' &&
+            (withdrawalMethod === "upi" && !upiId) ||
+            (withdrawalMethod === "bank" &&
               (!bankName || !accountNumber || !ifscCode || !accountHolderName))
           }
         >
           <LinearGradient
-            colors={['#4a69bd', '#1e3799']}
+            colors={["#4a69bd", "#1e3799"]}
             style={[
               styles.gradient,
               (loading ||
                 !withdrawAmount ||
                 Number(withdrawAmount) < 50 ||
                 Number(withdrawAmount) > walletBalance ||
-                (withdrawalMethod === 'upi' && !upiId) ||
-                (withdrawalMethod === 'bank' &&
+                (withdrawalMethod === "upi" && !upiId) ||
+                (withdrawalMethod === "bank" &&
                   (!bankName ||
                     !accountNumber ||
                     !ifscCode ||
@@ -697,17 +697,17 @@ const WalletScreen = () => {
 
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
+            flexDirection: "row",
+            alignItems: "center",
             marginTop: 8,
-            justifyContent: 'center',
+            justifyContent: "center",
           }}
         >
           <Text style={styles.noteText}>
-            * Minimum withdrawal amount is{'       '}
+            * Minimum withdrawal amount is{"       "}
           </Text>
           <FontAwesome5 name="coins" size={14} color="#FFD700" />
-          <Text style={styles.noteText}>{'  '} 50</Text>
+          <Text style={styles.noteText}>{"  "} 50</Text>
         </View>
         <Text style={styles.noteText}>
           * Withdrawals are processed within 24 hours after admin approval
@@ -718,11 +718,11 @@ const WalletScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <LinearGradient
-        colors={['#1a1a2e', '#16213e', '#0f3460']}
+        colors={["#1a1a2e", "#16213e", "#0f3460"]}
         style={styles.background}
       />
 
@@ -736,7 +736,7 @@ const WalletScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Balance Card */}
         <LinearGradient
-          colors={['#4a69bd', '#1e3799']}
+          colors={["#4a69bd", "#1e3799"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.balanceCard}
@@ -752,7 +752,7 @@ const WalletScreen = () => {
           </View>
           <Text style={styles.balanceAmount}>
             {walletBalance}
-            {'  '}
+            {"  "}
             <FontAwesome5
               name="coins"
               size={35}
@@ -775,20 +775,20 @@ const WalletScreen = () => {
         {/* Tabs for Deposit/Withdraw */}
         <View style={styles.tabsContainer}>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'deposit' && styles.activeTab]}
-            onPress={() => setActiveTab('deposit')}
+            style={[styles.tab, activeTab === "deposit" && styles.activeTab]}
+            onPress={() => setActiveTab("deposit")}
           >
             <Feather
               name="arrow-down-circle"
               size={18}
               color={
-                activeTab === 'deposit' ? '#ffffff' : 'rgba(255, 255, 255, 0.6)'
+                activeTab === "deposit" ? "#ffffff" : "rgba(255, 255, 255, 0.6)"
               }
             />
             <Text
               style={[
                 styles.tabText,
-                activeTab === 'deposit' && styles.activeTabText,
+                activeTab === "deposit" && styles.activeTabText,
               ]}
             >
               Deposit
@@ -796,22 +796,22 @@ const WalletScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'withdraw' && styles.activeTab]}
-            onPress={() => setActiveTab('withdraw')}
+            style={[styles.tab, activeTab === "withdraw" && styles.activeTab]}
+            onPress={() => setActiveTab("withdraw")}
           >
             <Feather
               name="arrow-up-circle"
               size={18}
               color={
-                activeTab === 'withdraw'
-                  ? '#ffffff'
-                  : 'rgba(255, 255, 255, 0.6)'
+                activeTab === "withdraw"
+                  ? "#ffffff"
+                  : "rgba(255, 255, 255, 0.6)"
               }
             />
             <Text
               style={[
                 styles.tabText,
-                activeTab === 'withdraw' && styles.activeTabText,
+                activeTab === "withdraw" && styles.activeTabText,
               ]}
             >
               Withdraw
@@ -821,7 +821,7 @@ const WalletScreen = () => {
 
         {/* Transaction Form */}
         <View style={styles.formContainer}>
-          {activeTab === 'deposit' ? renderDepositForm() : renderWithdrawForm()}
+          {activeTab === "deposit" ? renderDepositForm() : renderWithdrawForm()}
         </View>
 
         {/* Transaction History */}
@@ -868,34 +868,34 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   background: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
+    borderBottomColor: "rgba(255,255,255,0.1)",
   },
   headerTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontWeight: "bold",
+    color: "#ffffff",
   },
   iconButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(255,255,255,0.1)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   scrollContent: {
     padding: 16,
@@ -907,164 +907,164 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   balanceTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   balanceLabel: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: "rgba(255, 255, 255, 0.8)",
   },
   refreshIcon: {
     opacity: 0.8,
   },
   balanceAmount: {
     fontSize: 36,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontWeight: "bold",
+    color: "#ffffff",
     marginBottom: 16,
   },
   balanceActions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 8,
   },
   quickAction: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 20,
   },
   quickActionText: {
-    color: '#ffffff',
+    color: "#ffffff",
     marginLeft: 6,
     fontSize: 14,
   },
   tabsContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    flexDirection: "row",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 12,
     padding: 4,
     marginBottom: 20,
   },
   tab: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 12,
     borderRadius: 8,
   },
   activeTab: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
   },
   tabText: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: "rgba(255, 255, 255, 0.6)",
     marginLeft: 8,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   activeTabText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    color: "#ffffff",
+    fontWeight: "bold",
   },
   formContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
     borderRadius: 16,
     padding: 20,
     marginBottom: 24,
   },
   inputLabel: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: "rgba(255, 255, 255, 0.7)",
     marginBottom: 8,
   },
   subLabel: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: "rgba(255, 255, 255, 0.7)",
     marginBottom: 6,
     marginTop: 10,
   },
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: "rgba(255, 255, 255, 0.2)",
     marginBottom: 16,
   },
   currencySymbol: {
     paddingLeft: 16,
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   input: {
     flex: 1,
     padding: 16,
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
   },
   quickAmounts: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     marginBottom: 20,
   },
   quickAmountButton: {
-    width: '48%',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    width: "48%",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 8,
     paddingVertical: 10,
     marginBottom: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   quickAmountText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   actionButton: {
     borderRadius: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
     marginBottom: 12,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
   gradient: {
     paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   disabledGradient: {
     opacity: 0.5,
   },
   actionButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   noteText: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: "rgba(255, 255, 255, 0.5)",
     fontSize: 12,
-    fontStyle: 'italic',
-    textAlign: 'center',
+    fontStyle: "italic",
+    textAlign: "center",
   },
   historyContainer: {
     marginBottom: 16,
   },
   historyTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontWeight: "bold",
+    color: "#ffffff",
     marginBottom: 16,
   },
   transactionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
     borderRadius: 12,
     padding: 16,
     marginBottom: 8,
@@ -1076,161 +1076,161 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   depositIcon: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
   withdrawIcon: {
-    backgroundColor: '#4a69bd',
+    backgroundColor: "#4a69bd",
   },
   transactionDetails: {
     flex: 1,
   },
   transactionType: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 4,
   },
   transactionDate: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: "rgba(255, 255, 255, 0.6)",
     fontSize: 12,
   },
   statusText: {
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 5,
   },
   statusCompleted: {
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   statusPending: {
-    color: '#FFC107',
+    color: "#FFC107",
   },
   statusRejected: {
-    color: '#F44336',
+    color: "#F44336",
   },
   transactionAmount: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   depositText: {
-    color: '#4CAF50',
+    color: "#4CAF50",
   },
   withdrawText: {
-    color: '#4a69bd',
+    color: "#4a69bd",
   },
   paymentMethodContainer: {
     marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: "rgba(255, 255, 255, 0.7)",
     marginBottom: 8,
   },
   paymentToggle: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    flexDirection: "row",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   paymentOption: {
     flex: 1,
     paddingVertical: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   activePaymentOption: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
   },
   paymentOptionText: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontWeight: '500',
+    color: "rgba(255, 255, 255, 0.7)",
+    fontWeight: "500",
   },
   activePaymentOptionText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    color: "#ffffff",
+    fontWeight: "bold",
   },
   upiContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
     borderRadius: 8,
     padding: 16,
     marginBottom: 20,
   },
   upiLabel: {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: "rgba(255, 255, 255, 0.7)",
     fontSize: 12,
     marginBottom: 8,
   },
   upiIdContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
     borderRadius: 8,
     padding: 12,
   },
   upiIdText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   copyButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   qrButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 12,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
     borderRadius: 8,
     marginBottom: 20,
   },
   qrButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     marginLeft: 8,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     marginVertical: 20,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   modalContainer: {
-    width: '90%',
-    backgroundColor: '#16213e',
+    width: "90%",
+    backgroundColor: "#16213e",
     borderRadius: 16,
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
     marginBottom: 20,
   },
   modalTitle: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   qrContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
@@ -1240,20 +1240,20 @@ const styles = StyleSheet.create({
     height: 200,
   },
   modalUpiId: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    color: "#ffffff",
+    fontWeight: "bold",
     fontSize: 16,
     marginBottom: 20,
   },
   modalButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
   },
   modalButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    color: "#ffffff",
+    fontWeight: "bold",
   },
 });
 export default WalletScreen;

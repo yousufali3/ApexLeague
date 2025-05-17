@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,72 +6,125 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Feather } from '@expo/vector-icons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
-import ClashSqlad from '../assets/ClashSquad.jpg';
-import FullMap from '../assets/FullMap.jpg';
-import LoneWolf from '../assets/LoneWolf.jpg';
-import Craftland from '../assets/CraftLand.jpg';
+  Linking,
+  Dimensions,
+  Animated,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Feather } from "@expo/vector-icons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import ClashSqlad from "../assets/ClashSquad.jpg";
+import FullMap from "../assets/FullMap.jpg";
+import LoneWolf from "../assets/LoneWolf.jpg";
+import Craftland from "../assets/CraftLand.jpg";
 
 const AllMode = () => {
   const gameModes = [
     {
       id: 1,
-      name: 'CLASH SQUAD',
+      name: "CLASH SQUAD",
       image: ClashSqlad,
-      color: '#0e6ee3',
+      color: "#0e6ee3",
     },
     {
       id: 2,
-      name: 'FULL MAP',
+      name: "FULL MAP",
       image: FullMap,
-      color: '#ff8a00',
+      color: "#ff8a00",
     },
     {
       id: 3,
-      name: 'LONE WOLF',
+      name: "LONE WOLF",
       image: LoneWolf,
-      color: '#e31616',
+      color: "#e31616",
     },
     {
       id: 4,
-      name: 'CRAFT LAND',
+      name: "CRAFT LAND",
       image: Craftland,
-      color: '#0e6ee3',
+      color: "#0e6ee3",
     },
     {
       id: 5,
-      name: 'FREE MATCH',
-      image: require('../assets/free.jpg'), // Placeholder image
-      color: '#ff8a00',
+      name: "FREE MATCH",
+      image: require("../assets/free.jpg"), // Placeholder image
+      color: "#ff8a00",
     },
   ];
 
   const navigation = useNavigation();
   const [selectedMode, setSelectedMode] = useState(null);
-  const [activeTab, setActiveTab] = useState('games'); // Track active bottom tab
+  const [activeTab, setActiveTab] = useState("games"); // Track active bottom tab
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef(null);
+  const bannerWidth = Dimensions.get("window").width;
+  const isScrolling = useRef(false);
+
+  const banners = [
+    require("../assets/banner.jpg"),
+    require("../assets/banner2.jpg"),
+  ];
+
+  const autoSlide = () => {
+    if (isScrolling.current) return;
+
+    let nextIndex = currentBannerIndex + 1;
+
+    if (nextIndex >= banners.length) {
+      // Smoothly scroll to first slide
+      isScrolling.current = true;
+      scrollViewRef.current?.scrollTo({
+        x: 0,
+        animated: true,
+      });
+      nextIndex = 0;
+      setTimeout(() => {
+        isScrolling.current = false;
+      }, 500);
+    } else {
+      scrollViewRef.current?.scrollTo({
+        x: nextIndex * bannerWidth,
+        animated: true,
+      });
+    }
+
+    setCurrentBannerIndex(nextIndex);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(autoSlide, 3000);
+    return () => clearInterval(interval);
+  }, [currentBannerIndex]);
+
+  const handleScroll = (event) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const newIndex = Math.round(offsetX / bannerWidth);
+
+    if (newIndex !== currentBannerIndex) {
+      setCurrentBannerIndex(newIndex);
+    }
+  };
 
   const handleCardPress = (mode) => {
     setSelectedMode(mode);
     console.log(`Selected Mode: ${mode.name}`);
-    navigation.navigate('GameScreen', { mode });
+    navigation.navigate("GameScreen", { mode });
   };
 
   // Handle bottom navigation presses
   const handleNavPress = (tab) => {
     setActiveTab(tab);
     switch (tab) {
-      case 'refer':
-        navigation.navigate('ReferScreen'); // Navigate to Refer & Earn screen
+      case "refer":
+        navigation.navigate("ReferScreen"); // Navigate to Refer & Earn screen
         break;
-      case 'upcoming':
-        navigation.navigate('UpcomingTournaments'); // Navigate to Upcoming screen
+      case "upcoming":
+        navigation.navigate("UpcomingTournaments"); // Navigate to Upcoming screen
         break;
-      case 'completed':
-        navigation.navigate('CompletedTournaments'); // Navigate to Completed screen
+      case "completed":
+        navigation.navigate("CompletedTournaments"); // Navigate to Completed screen
         break;
       default:
         // Stay on current screen
@@ -82,7 +135,7 @@ const AllMode = () => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#1a1a2e', '#16213e', '#0f3460']}
+        colors={["#1a1a2e", "#16213e", "#0f3460"]}
         style={styles.background}
       />
 
@@ -94,25 +147,23 @@ const AllMode = () => {
       </View>
 
       <View style={styles.topNav}>
-        {' '}
-        {/* ← Moved outside header */}
         {/* Nav Items */}
         <TouchableOpacity
           style={[
             styles.navItem,
-            activeTab === 'refer' && styles.activeNavItem,
+            activeTab === "refer" && styles.activeNavItem,
           ]}
-          onPress={() => handleNavPress('refer')}
+          onPress={() => handleNavPress("refer")}
         >
           <MaterialIcons
             name="card-giftcard"
             size={24}
-            color={activeTab === 'refer' ? '#ff9e00' : '#fff'}
+            color={activeTab === "refer" ? "#ff9e00" : "#ff9e00"}
           />
           <Text
             style={[
               styles.navLabel,
-              activeTab === 'refer' && styles.activeNavLabel,
+              activeTab === "refer" && styles.activeNavLabel,
             ]}
           >
             Refer & Earn
@@ -121,19 +172,19 @@ const AllMode = () => {
         <TouchableOpacity
           style={[
             styles.navItem,
-            activeTab === 'upcoming' && styles.activeNavItem,
+            activeTab === "upcoming" && styles.activeNavItem,
           ]}
-          onPress={() => handleNavPress('upcoming')}
+          onPress={() => handleNavPress("upcoming")}
         >
           <MaterialIcons
-            name="event"
+            name="emoji-events"
             size={24}
-            color={activeTab === 'upcoming' ? '#ff9e00' : '#fff'}
+            color={activeTab === "upcoming" ? "#ff9e00" : "#ff9e00"}
           />
           <Text
             style={[
               styles.navLabel,
-              activeTab === 'upcoming' && styles.activeNavLabel,
+              activeTab === "upcoming" && styles.activeNavLabel,
             ]}
           >
             Upcoming
@@ -142,19 +193,19 @@ const AllMode = () => {
         <TouchableOpacity
           style={[
             styles.navItem,
-            activeTab === 'completed' && styles.activeNavItem,
+            activeTab === "completed" && styles.activeNavItem,
           ]}
-          onPress={() => handleNavPress('completed')}
+          onPress={() => handleNavPress("completed")}
         >
           <MaterialIcons
-            name="check-circle"
+            name="emoji-events"
             size={24}
-            color={activeTab === 'completed' ? '#ff9e00' : '#fff'}
+            color={activeTab === "completed" ? "#ff9e00" : "#ff9e00"}
           />
           <Text
             style={[
               styles.navLabel,
-              activeTab === 'completed' && styles.activeNavLabel,
+              activeTab === "completed" && styles.activeNavLabel,
             ]}
           >
             Completed
@@ -162,9 +213,58 @@ const AllMode = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Enhanced Bottom Navigation Bar */}
-
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.bannerContainer}>
+          <Animated.ScrollView
+            ref={scrollViewRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            style={styles.bannerScroll}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            onMomentumScrollEnd={(event) => {
+              const offsetX = event.nativeEvent.contentOffset.x;
+              const newIndex = Math.round(offsetX / bannerWidth);
+              setCurrentBannerIndex(newIndex);
+            }}
+          >
+            {banners.map((banner, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.promoContainer}
+                onPress={() => {
+                  Linking.openURL(
+                    "https://www.instagram.com/apexleagueofficial?igsh=Znp0YmpkOHJ1Z3ow"
+                  );
+                }}
+              >
+                <Image
+                  source={banner}
+                  style={styles.promoImage}
+                  resizeMode="cover"
+                />
+                <LinearGradient
+                  colors={["transparent", "rgba(0,0,0,0.7)"]}
+                  style={styles.promoGradient}
+                />
+              </TouchableOpacity>
+            ))}
+          </Animated.ScrollView>
+
+          <View style={styles.bannerIndicators}>
+            {banners.map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.indicator,
+                  currentBannerIndex === index && styles.activeIndicator,
+                ]}
+              />
+            ))}
+          </View>
+        </View>
+
         <View style={styles.gameGrid}>
           {gameModes.map((mode) => (
             <TouchableOpacity
@@ -175,7 +275,7 @@ const AllMode = () => {
               <View style={styles.imageContainer}>
                 <Image source={mode.image} style={styles.gameImage} />
                 <LinearGradient
-                  colors={['transparent', 'rgba(0,0,0,0.8)']}
+                  colors={["transparent", "rgba(0,0,0,0.8)"]}
                   style={styles.gradient}
                 />
                 <View
@@ -197,91 +297,91 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   background: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
+    borderBottomColor: "rgba(255,255,255,0.1)",
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontWeight: "bold",
+    color: "#ffffff",
   },
   iconButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(255,255,255,0.1)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   scrollContent: {
     padding: 8,
     paddingBottom: 80, // Ensure content doesn't hide behind bottom nav
   },
   gameGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   gameCard: {
-    width: '48%',
+    width: "48%",
     marginBottom: 16,
     borderRadius: 8,
-    overflow: 'hidden',
-    backgroundColor: '#000',
+    overflow: "hidden",
+    backgroundColor: "#000",
   },
   imageContainer: {
-    position: 'relative',
+    position: "relative",
     height: 150,
   },
   gameImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-    alignSelf: 'center',
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    alignSelf: "center",
   },
   gradient: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-    height: '50%',
+    height: "50%",
   },
   gameBanner: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     paddingVertical: 6,
     paddingHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   gameText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   topNav: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    flexDirection: "row",
+    backgroundColor: "rgba(15, 23, 42, 0.95)",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
+    borderBottomColor: "rgba(255,255,255,0.1)",
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -289,23 +389,89 @@ const styles = StyleSheet.create({
 
   navItem: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 8,
   },
   activeNavItem: {
     borderBottomWidth: 2,
-    borderBottomColor: '#ff9e00',
+    borderBottomColor: "#ff9e00",
   },
   navLabel: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 11,
     marginTop: 4,
-    textAlign: 'center',
+    textAlign: "center",
   },
   activeNavLabel: {
-    color: '#ff9e00',
-    fontWeight: 'bold',
+    color: "#ff9e00",
+    fontWeight: "bold",
+  },
+  bannerContainer: {
+    width: "100%",
+    height: 200,
+    marginTop: 16,
+    marginBottom: 16,
+    position: "relative",
+    overflow: "hidden",
+  },
+  bannerScroll: {
+    width: "100%",
+    height: "100%",
+  },
+  promoContainer: {
+    width: Dimensions.get("window").width,
+    height: 200,
+    overflow: "hidden",
+  },
+  promoImage: {
+    width: "100%",
+    height: "100%",
+  },
+  promoGradient: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: "50%",
+  },
+  promoContent: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  promoText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 8,
+  },
+  bannerIndicators: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 10,
+    width: "100%",
+    zIndex: 1,
+  },
+  indicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    marginHorizontal: 4,
+  },
+  activeIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#ff9e00",
   },
 });
 
